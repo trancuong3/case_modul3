@@ -1,21 +1,17 @@
 package DAO;
-
 import model.Book;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
-
 public class BookDao {
     private String jdbcURL = "jdbc:mysql://localhost:3306/book_management?useSSL=false";
     private String jdbcUsername = "root";
     private String jdbcPassword = "trancuong365421";
-
     private static final String INSERT_BOOK_SQL = "INSERT INTO books (title, genre, author_id) VALUES (?, ?, ?);";
     private static final String SELECT_BOOK_BY_ID = "SELECT id, title, genre, author_id FROM books WHERE id = ?;";
     private static final String SELECT_ALL_BOOKS = "SELECT * FROM books;";
     private static final String DELETE_BOOK_SQL = "DELETE FROM books WHERE id = ?;";
     private static final String UPDATE_BOOK_SQL = "UPDATE books SET title = ?, genre = ?, author_id = ? WHERE id = ?;";
-
     protected Connection getConnection() {
         Connection connection = null;
         try {
@@ -26,7 +22,6 @@ public class BookDao {
         }
         return connection;
     }
-
     public void insertBook(Book book) throws SQLException {
         try (Connection connection = getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(INSERT_BOOK_SQL)) {
@@ -38,14 +33,12 @@ public class BookDao {
             e.printStackTrace();
         }
     }
-
     public Book selectBook(int id) {
         Book book = null;
         try (Connection connection = getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(SELECT_BOOK_BY_ID)) {
             preparedStatement.setInt(1, id);
             ResultSet rs = preparedStatement.executeQuery();
-
             while (rs.next()) {
                 String title = rs.getString("title");
                 String genre = rs.getString("genre");
@@ -61,13 +54,11 @@ public class BookDao {
         }
         return book;
     }
-
     public List<Book> selectAllBooks() {
         List<Book> books = new ArrayList<>();
         try (Connection connection = getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(SELECT_ALL_BOOKS)) {
             ResultSet rs = preparedStatement.executeQuery();
-
             while (rs.next()) {
                 int id = rs.getInt("id");
                 String title = rs.getString("title");
@@ -85,7 +76,6 @@ public class BookDao {
         }
         return books;
     }
-
     public boolean deleteBook(int id) throws SQLException {
         boolean rowDeleted;
         try (Connection connection = getConnection();
@@ -95,7 +85,6 @@ public class BookDao {
         }
         return rowDeleted;
     }
-
     public boolean updateBook(Book book) throws SQLException {
         boolean rowUpdated;
         try (Connection connection = getConnection();

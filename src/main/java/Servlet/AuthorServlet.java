@@ -12,7 +12,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
-
 @WebServlet(name = "AuthorServlet", urlPatterns = {"/authors/*"})
 public class AuthorServlet extends HttpServlet {
     private AuthorDao authorDao;
@@ -20,7 +19,6 @@ public class AuthorServlet extends HttpServlet {
     public void init() {
         authorDao = new AuthorDao();
     }
-
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String action = request.getServletPath();
@@ -50,22 +48,19 @@ public class AuthorServlet extends HttpServlet {
             throw new ServletException(ex);
         }
     }
-
     private void listAuthor(HttpServletRequest request, HttpServletResponse response)
             throws SQLException, IOException, ServletException {
-        List<Author> listAuthor = authorDao.selectAllAuthors();
-        request.setAttribute("listAuthor", listAuthor);
-        RequestDispatcher dispatcher = request.getRequestDispatcher("/authors/list.jsp");
-        dispatcher.forward(request, response);
-    }
 
+            List<Author> listAuthor = authorDao.selectAllAuthors();
+            request.setAttribute("listAuthor", listAuthor);
+            RequestDispatcher dispatcher = request.getRequestDispatcher("views/authors/list.jsp");
+            dispatcher.forward(request, response);
+    }
     private void showNewForm(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        RequestDispatcher dispatcher = request.getRequestDispatcher("/authors/form.jsp");
+        RequestDispatcher dispatcher = request.getRequestDispatcher("views/authors/form.jsp");
         dispatcher.forward(request, response);
     }
-
-
     private void showEditForm(HttpServletRequest request, HttpServletResponse response)
             throws SQLException, ServletException, IOException {
         int id = Integer.parseInt(request.getParameter("id"));
@@ -74,7 +69,6 @@ public class AuthorServlet extends HttpServlet {
         request.setAttribute("author", existingAuthor);
         dispatcher.forward(request, response);
     }
-
     private void insertAuthor(HttpServletRequest request, HttpServletResponse response)
             throws SQLException, IOException {
         String name = request.getParameter("name");
@@ -85,22 +79,18 @@ public class AuthorServlet extends HttpServlet {
         authorDao.insertAuthor(newAuthor);
         response.sendRedirect("list");
     }
-
     private void updateAuthor(HttpServletRequest request, HttpServletResponse response)
             throws SQLException, IOException {
         int id = Integer.parseInt(request.getParameter("id"));
         String name = request.getParameter("name");
         String bio = request.getParameter("bio");
-
         Author author = new Author();
         author.setId(id);
         author.setName(name);
         author.setBio(bio);
-
         authorDao.updateAuthor(author);
         response.sendRedirect("list");
     }
-
     private void deleteAuthor(HttpServletRequest request, HttpServletResponse response)
             throws SQLException, IOException {
         int id = Integer.parseInt(request.getParameter("id"));

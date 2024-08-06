@@ -3,6 +3,7 @@ plugins {
     id 'war'
 }
 
+
 group 'org.example'
 version '1.0-SNAPSHOT'
 
@@ -28,6 +29,8 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter-api:${junitVersion}")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${junitVersion}")
 }
+
+
 
 test {
     useJUnitPlatform()
