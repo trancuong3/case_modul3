@@ -91,4 +91,12 @@ public class AuthorDao {
         }
         return rowUpdated;
     }
+    public void updateIdsAfterDelete(int deletedId) throws SQLException {
+        String query = "UPDATE authors SET id = id - 1 WHERE id > ?";
+        try (Connection connection = getConnection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setInt(1, deletedId);
+            statement.executeUpdate();
+        }
+    }
 }

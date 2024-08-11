@@ -1,5 +1,8 @@
 package DAO;
 import model.Book;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -7,7 +10,7 @@ public class BookDao {
     private String jdbcURL = "jdbc:mysql://localhost:3306/book_management?useSSL=false";
     private String jdbcUsername = "root";
     private String jdbcPassword = "trancuong365421";
-    private static final String INSERT_BOOK_SQL = "INSERT INTO books (title, genre, author_id) VALUES (?, ?, ?);";
+    private static final String INSERT_BOOK_SQL = "INSERT INTO books(title, genre, author_id) VALUES (?, ?, ?);";
     private static final String SELECT_BOOK_BY_ID = "SELECT id, title, genre, author_id FROM books WHERE id = ?;";
     private static final String SELECT_ALL_BOOKS = "SELECT * FROM books;";
     private static final String DELETE_BOOK_SQL = "DELETE FROM books WHERE id = ?;";
@@ -97,4 +100,17 @@ public class BookDao {
         }
         return rowUpdated;
     }
+    public void updateIdsAfterDelete(int deletedId) throws SQLException {
+        String query = "UPDATE books SET id = id - 1 WHERE id > ?";
+        try (Connection connection = getConnection();
+             PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setInt(1, deletedId);
+            statement.executeUpdate();
+        }
+    }
+
+
+
+
+
 }

@@ -13,7 +13,7 @@
 
     <c:choose>
     <c:when test="${book != null}">
-    <form action="books/update" method="post">
+    <form type="hidden" name="action" value="insert"  method="post">
         <input type="hidden" name="id" value="<c:out value='${book.id}'/>" />
         </c:when>
         <c:otherwise>
@@ -22,19 +22,20 @@
             </c:choose>
 
             <div class="form-group">
-                <label for="title">Title</label>
-                <input type="text" class="form-control" name="title" id="title" value="${book.title}" required>
-            </div>
-            <div class="form-group">
-                <label for="genre">Genre</label>
-                <input type="text" class="form-control" name="genre" id="genre" value="${book.genre}">
-            </div>
-            <div class="form-group">
-                <label for="authorId">Author</label>
-                <input type="number" class="form-control" name="authorid" id="authorid" value="${book.authorid}">
-            </div>
-            <button type="submit" class="btn btn-primary">Save</button>
-        </form>
+<%--  <input type="hidden" name="action" value="insert">--%>
+  <label for="title">Title</label>
+  <input type="text" class="form-control" name="title" id="title" value="${book.title}" required>
+</div>
+<div class="form-group">
+  <label for="genre">Genre</label>
+  <input type="text" class="form-control" name="genre" id="genre" value="${book.genre}">
+</div>
+<div class="form-group">
+  <label for="authorId">Author ID</label>
+  <input type="number" class="form-control" name="authorid" id="authorid" value="${book.authorid}">
+</div>
+<button type="submit" class="btn btn-primary">Save</button>
+</form>
 </div>
 </body>
 </html>

@@ -22,50 +22,55 @@ public class BookServlet extends HttpServlet {
     }
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        String action = request.getServletPath();
-        try {
+        String action = request.getParameter("action");
+        if(action == null || action.equals("/")){
+            action = "";
+        }
             switch (action) {
                 case "/new":
                     showNewForm(request, response);
                     break;
-                case "/insert":
-                    insertBook(request, response);
+                case "insert":
+                    try {
+                        insertBook(request, response);
+                    } catch (SQLException e) {
+                        throw new RuntimeException(e);
+                    }
                     break;
-                case "/delete":
-                    deleteBook(request, response);
+                case "delete":
+                    try {
+                        deleteBook(request, response);
+                    } catch (SQLException e) {
+                        throw new RuntimeException(e);
+                    }
                     break;
-                case "/edit":
-                    showEditForm(request, response);
+                case "edit":
+                    try {
+                        showEditForm(request, response);
+                    } catch (SQLException e) {
+                        throw new RuntimeException(e);
+                    }
                     break;
-                case "/update":
-                    updateBook(request, response);
+                case "update":
+                    try {
+                        updateBook(request, response);
+                    } catch (SQLException e) {
+                        throw new RuntimeException(e);
+                    }
                     break;
                 default:
-                    listBook(request, response);
+                    try {
+                        listBook(request, response);
+                    } catch (SQLException e) {
+                        throw new RuntimeException(e);
+                    }
                     break;
             }
-        } catch (SQLException ex) {
-            throw new ServletException(ex);
-        }
     }
+
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        String action = request.getPathInfo();
-        try {
-            switch (action) {
-                case "/insert":
-                    insertBook(request, response);
-                    break;
-                case "/update":
-                    updateBook(request, response);
-                    break;
-                default:
-                    listBook(request, response);
-                    break;
-            }
-        } catch (SQLException ex) {
-            throw new ServletException(ex);
-        }
+        doGet(request, response);
     }
     private void listBook(HttpServletRequest request, HttpServletResponse response)
             throws SQLException, IOException, ServletException {
@@ -78,7 +83,7 @@ public class BookServlet extends HttpServlet {
             throws ServletException, IOException {
         List<Author> authors = authorDao.selectAllAuthors();
         request.setAttribute("authors", authors);
-        RequestDispatcher dispatcher = request.getRequestDispatcher("views/books/form.jsp");
+        RequestDispatcher dispatcher = request.getRequestDispatcher("views/book/form.jsp");
         dispatcher.forward(request, response);
     }
     private void showEditForm(HttpServletRequest request, HttpServletResponse response)
@@ -101,7 +106,7 @@ public class BookServlet extends HttpServlet {
         newBook.setGenre(genre);
         newBook.setAuthorId(authorId);
         bookDao.insertBook(newBook);
-        response.sendRedirect("list");
+        response.sendRedirect("/books");
     }
     private void updateBook(HttpServletRequest request, HttpServletResponse response)
             throws SQLException, IOException {
@@ -115,12 +120,13 @@ public class BookServlet extends HttpServlet {
         book.setGenre(genre);
         book.setAuthorId(authorId);
         bookDao.updateBook(book);
-        response.sendRedirect("list");
+        response.sendRedirect("/books");
     }
     private void deleteBook(HttpServletRequest request, HttpServletResponse response)
             throws SQLException, IOException {
         int id = Integer.parseInt(request.getParameter("id"));
         bookDao.deleteBook(id);
-        response.sendRedirect("list");
+        bookDao.updateIdsAfterDelete(id);
+        response.sendRedirect("/books");
     }
 }

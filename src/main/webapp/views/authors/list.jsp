@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <title>Author List</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <a href="index.jsp" class="btn btn-secondary back-button">Back</a>
     <style>
         body {
             background-color: #f8f9fa;
@@ -22,6 +23,22 @@
         }
         .btn {
             margin-bottom: 10px;
+        }
+        .back-button {
+            margin-bottom: 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 50px;
+            padding: 10px 20px;
+            font-size: 16px;
+            font-weight: bold;
+            text-transform: uppercase;
+            transition: background-color 0.3s ease;
+        }
+        .back-button:hover {
+            background-color: #0056b3;
+            text-decoration: none;
         }
     </style>
 </head>
@@ -54,8 +71,8 @@
                 <td>${author.name}</td>
                 <td>${author.bio}</td>
                 <td>
-                    <a href="authors/edit?id=${author.id}" class="btn btn-warning btn-sm">Edit</a>
-                    <a href="authors/delete?id=${author.id}" class="btn btn-danger btn-sm">Delete</a>
+                    <a href="views/authors/form.jsp" class="btn btn-warning btn-sm">Edit</a>
+                    <a href="authors/delete?id=<c:out value='${author.id}' />&action=delete" class="btn btn-danger btn-sm">Delete</a>
                 </td>
             </tr>
         </c:forEach>

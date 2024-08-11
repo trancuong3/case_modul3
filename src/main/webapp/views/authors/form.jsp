@@ -12,11 +12,11 @@
     <h1>Author Form</h1>
 
     <c:if test="${author != null}">
-    <form action="authors/update" method="post"> <%-- Update existing author --%>
+    <form action="authors/update" method="post">
         <input type="hidden" name="id" value="<c:out value='${author.id}'/>"/>
         </c:if>
         <c:if test="${author == null}">
-        <form action="authors/insert" method="post"> <%-- Insert new author --%>
+        <form action="authors/insert" method="post">
             </c:if>
 
             <div class="form-group">

@@ -43,14 +43,14 @@
         <div class="card">
             <div class="card-body text-center">
                 <h5 class="card-title">Authors</h5>
-                <p class="card-text">Manage the list of authors and their details.</p>
+                <p class="card-text">Manage the list of authors and their details</p>
                 <a href="/authors" class="btn btn-primary">Manage Authors</a>
             </div>
         </div>
         <div class="card">
             <div class="card-body text-center">
                 <h5 class="card-title">Books</h5>
-                <p class="card-text">Manage the list of books and their details.</p>
+                <p class="card-text">Manage the list of books and their details</p>
                 <a href="/books" class="btn btn-primary">Manage Books</a>
             </div>
         </div>
@@ -59,7 +59,7 @@
 
 <footer>
     <div class="container">
-        <p class="text-muted">© 2024 Book Management System</p>
+        <p class="text-muted">2024 Book Management System</p>
     </div>
 </footer>
 

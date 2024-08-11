@@ -1,5 +1,4 @@
 package Servlet;
-
 import DAO.AuthorDao;
 import model.Author;
 
@@ -15,39 +14,58 @@ import java.util.List;
 @WebServlet(name = "AuthorServlet", urlPatterns = {"/authors/*"})
 public class AuthorServlet extends HttpServlet {
     private AuthorDao authorDao;
-
     public void init() {
         authorDao = new AuthorDao();
     }
+
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        String action = request.getServletPath();
-
-        try {
-            switch (action) {
-                case "/new":
-                    showNewForm(request, response);
-                    break;
-                case "/insert":
+        String action = request.getParameter("action");
+        if(action == null || action.equals("/")){
+            action = "";
+        }
+        switch (action) {
+            case "/new":
+                showNewForm(request, response);
+                break;
+            case "insert":
+                try {
                     insertAuthor(request, response);
-                    break;
-                case "/delete":
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+                break;
+            case "delete":
+                try {
                     deleteAuthor(request, response);
-                    break;
-                case "/edit":
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+                break;
+            case "edit":
+                try {
                     showEditForm(request, response);
-                    break;
-                case "/update":
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+                break;
+            case "update":
+                try {
                     updateAuthor(request, response);
-                    break;
-                default:
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+                break;
+            default:
+                try {
                     listAuthor(request, response);
-                    break;
-            }
-        } catch (SQLException ex) {
-            throw new ServletException(ex);
+                } catch (SQLException e) {
+                    throw new RuntimeException(e);
+                }
+                break;
         }
     }
+
     private void listAuthor(HttpServletRequest request, HttpServletResponse response)
             throws SQLException, IOException, ServletException {
 
@@ -77,7 +95,7 @@ public class AuthorServlet extends HttpServlet {
         newAuthor.setName(name);
         newAuthor.setBio(bio);
         authorDao.insertAuthor(newAuthor);
-        response.sendRedirect("list");
+        response.sendRedirect("/authors");
     }
     private void updateAuthor(HttpServletRequest request, HttpServletResponse response)
             throws SQLException, IOException {
@@ -89,12 +107,13 @@ public class AuthorServlet extends HttpServlet {
         author.setName(name);
         author.setBio(bio);
         authorDao.updateAuthor(author);
-        response.sendRedirect("list");
+        response.sendRedirect("/authors");
     }
     private void deleteAuthor(HttpServletRequest request, HttpServletResponse response)
             throws SQLException, IOException {
         int id = Integer.parseInt(request.getParameter("id"));
         authorDao.deleteAuthor(id);
-        response.sendRedirect("list");
+        authorDao.updateIdsAfterDelete(id);
+        response.sendRedirect("/authors");
     }
 }
