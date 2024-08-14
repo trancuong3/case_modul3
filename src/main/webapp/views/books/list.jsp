@@ -1,4 +1,3 @@
-
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html>
@@ -47,10 +46,10 @@
     <h1>Book List</h1>
     <form action="books" method="get">
         <div class="form-group">
-            <input type="text" class="form-control" id="searchQuery" name="searchQuery" >
+            <input type="text" class="form-control" id="searchQuery" name="searchQuery" placeholder="Search " value="${param.searchQuery}">
         </div>
         <button type="submit" class="btn btn-primary">Search</button>
-        <a href="views/books/form.jsp" class="btn btn-success">Add New Book</a>
+        <a href="books?action=new" class="btn btn-success">Add New Book</a>
         <a href="authors" class="btn btn-secondary">View Author List</a>
     </form>
     <table class="table table-striped">
@@ -71,8 +70,8 @@
                 <td><c:out value="${book.genre}" /></td>
                 <td><c:out value="${book.authorId}" /></td>
                 <td>
-                    <a href="views/books/form.jsp" class="btn btn-warning btn-sm">Edit</a>
-                    <a href="books/delete?id=<c:out value='${book.id}' />&action=delete" class="btn btn-danger btn-sm">Delete</a>
+                    <a href="books?action=edit&id=${book.id}" class="btn btn-warning btn-sm">Edit</a>
+                    <a href="books/delete?id=${book.id}&action=delete" onclick="return confirm('Are you want delete?')" class="btn btn-danger btn-sm">Delete</a>
                 </td>
             </tr>
         </c:forEach>

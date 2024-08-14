@@ -4,12 +4,20 @@ public class Book {
     private String title;
     private String genre;
     private int authorId;
+    private String authorName;
 
-    public Book(int authorId, String genre, int id, String title) {
+    public Book(int authorId, String genre, String id, int title) {
         this.authorId = authorId;
         this.genre = genre;
-        this.id = id;
-        this.title = title;
+        this.id = Integer.parseInt(id);
+        this.title = String.valueOf(title);
+    }
+    public String getAuthorName() {
+        return authorName;
+    }
+
+    public void setAuthorName(String authorName) {
+        this.authorName = authorName;
     }
     public Book(){}
 

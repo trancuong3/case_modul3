@@ -27,7 +27,7 @@ public class BookServlet extends HttpServlet {
             action = "";
         }
             switch (action) {
-                case "/new":
+                case "new":
                     showNewForm(request, response);
                     break;
                 case "insert":
@@ -74,26 +74,36 @@ public class BookServlet extends HttpServlet {
     }
     private void listBook(HttpServletRequest request, HttpServletResponse response)
             throws SQLException, IOException, ServletException {
-        List<Book> listBook = bookDao.selectAllBooks();
+        String searchQuery = request.getParameter("searchQuery");
+        List<Book> listBook;
+
+        if (searchQuery != null && !searchQuery.trim().isEmpty()) {
+            listBook = bookDao.searchBooks(searchQuery);
+        } else {
+            listBook = bookDao.selectAllBooks();
+        }
+
         request.setAttribute("listBook", listBook);
         RequestDispatcher dispatcher = request.getRequestDispatcher("views/books/list.jsp");
         dispatcher.forward(request, response);
     }
+
     private void showNewForm(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         List<Author> authors = authorDao.selectAllAuthors();
         request.setAttribute("authors", authors);
-        RequestDispatcher dispatcher = request.getRequestDispatcher("views/book/form.jsp");
+        RequestDispatcher dispatcher = request.getRequestDispatcher("/views/books/form.jsp");
         dispatcher.forward(request, response);
     }
+
     private void showEditForm(HttpServletRequest request, HttpServletResponse response)
             throws SQLException, ServletException, IOException {
         int id = Integer.parseInt(request.getParameter("id"));
         Book existingBook = bookDao.selectBook(id);
         List<Author> authors = authorDao.selectAllAuthors();
-        RequestDispatcher dispatcher = request.getRequestDispatcher("books/form.jsp");
         request.setAttribute("book", existingBook);
         request.setAttribute("authors", authors);
+        RequestDispatcher dispatcher = request.getRequestDispatcher("/views/books/edit.jsp");
         dispatcher.forward(request, response);
     }
     private void insertBook(HttpServletRequest request, HttpServletResponse response)
@@ -129,4 +139,5 @@ public class BookServlet extends HttpServlet {
         bookDao.updateIdsAfterDelete(id);
         response.sendRedirect("/books");
     }
+
 }

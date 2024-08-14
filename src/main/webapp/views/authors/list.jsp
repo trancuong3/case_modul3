@@ -48,10 +48,10 @@
 
     <form action="authors" method="get">
         <div class="form-group">
-            <input type="text" class="form-control" id="searchQuery" name="searchQuery"placeholder="Search by Name or Bio">
+            <input type="text" class="form-control" id="searchQuery" name="searchQuery" placeholder="Search " value="${param.searchQuery}">
         </div>
         <button type="submit" class="btn btn-primary">Search</button>
-        <a href="views/authors/form.jsp" class="btn btn-success">Add New Author</a>
+        <a href="authors?action=new" class="btn btn-success">Add New Author</a>
         <a href="books" class="btn btn-secondary">Back to Book List</a>
     </form>
 
@@ -71,8 +71,8 @@
                 <td>${author.name}</td>
                 <td>${author.bio}</td>
                 <td>
-                    <a href="views/authors/form.jsp" class="btn btn-warning btn-sm">Edit</a>
-                    <a href="authors/delete?id=<c:out value='${author.id}' />&action=delete" class="btn btn-danger btn-sm">Delete</a>
+                    <a href="authors?action=edit&id=${author.id}" class="btn btn-warning btn-sm">Edit</a>
+                    <a href="authors/delete?id=${author.id}&action=delete"onclick="return confirm('If you delete this author, all books related to the author will be deleted')" class="btn btn-danger btn-sm">Delete</a>
                 </td>
             </tr>
         </c:forEach>

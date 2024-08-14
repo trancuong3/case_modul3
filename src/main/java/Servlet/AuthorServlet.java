@@ -1,6 +1,8 @@
 package Servlet;
 import DAO.AuthorDao;
+import DAO.BookDao;
 import model.Author;
+import model.Book;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -14,6 +16,7 @@ import java.util.List;
 @WebServlet(name = "AuthorServlet", urlPatterns = {"/authors/*"})
 public class AuthorServlet extends HttpServlet {
     private AuthorDao authorDao;
+    private BookDao bookDao;
     public void init() {
         authorDao = new AuthorDao();
     }
@@ -25,7 +28,7 @@ public class AuthorServlet extends HttpServlet {
             action = "";
         }
         switch (action) {
-            case "/new":
+            case "new":
                 showNewForm(request, response);
                 break;
             case "insert":
@@ -65,15 +68,26 @@ public class AuthorServlet extends HttpServlet {
                 break;
         }
     }
-
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        doGet(request, response);
+    }
     private void listAuthor(HttpServletRequest request, HttpServletResponse response)
             throws SQLException, IOException, ServletException {
+        String searchQuery = request.getParameter("searchQuery");
+        List<Author> listAuthor;
 
-            List<Author> listAuthor = authorDao.selectAllAuthors();
-            request.setAttribute("listAuthor", listAuthor);
-            RequestDispatcher dispatcher = request.getRequestDispatcher("views/authors/list.jsp");
-            dispatcher.forward(request, response);
+        if (searchQuery != null && !searchQuery.trim().isEmpty()) {
+            listAuthor = authorDao.searchAuthors(searchQuery);
+        } else {
+            listAuthor = authorDao.selectAllAuthors();
+        }
+
+        request.setAttribute("listAuthor", listAuthor);
+        RequestDispatcher dispatcher = request.getRequestDispatcher("views/authors/list.jsp");
+        dispatcher.forward(request, response);
     }
+
     private void showNewForm(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         RequestDispatcher dispatcher = request.getRequestDispatcher("views/authors/form.jsp");
@@ -83,7 +97,7 @@ public class AuthorServlet extends HttpServlet {
             throws SQLException, ServletException, IOException {
         int id = Integer.parseInt(request.getParameter("id"));
         Author existingAuthor = authorDao.selectAuthor(id);
-        RequestDispatcher dispatcher = request.getRequestDispatcher("authors/form.jsp");
+        RequestDispatcher dispatcher = request.getRequestDispatcher("views/authors/edit.jsp");
         request.setAttribute("author", existingAuthor);
         dispatcher.forward(request, response);
     }
@@ -109,11 +123,23 @@ public class AuthorServlet extends HttpServlet {
         authorDao.updateAuthor(author);
         response.sendRedirect("/authors");
     }
+
     private void deleteAuthor(HttpServletRequest request, HttpServletResponse response)
-            throws SQLException, IOException {
+            throws SQLException, ServletException, IOException {
         int id = Integer.parseInt(request.getParameter("id"));
-        authorDao.deleteAuthor(id);
-        authorDao.updateIdsAfterDelete(id);
-        response.sendRedirect("/authors");
+        List<Book> associatedBooks = authorDao.selectBooksByAuthorId(id);
+
+        if (!associatedBooks.isEmpty()) {
+            request.setAttribute("associatedBooks", associatedBooks);
+            request.setAttribute("authorId", id);
+            RequestDispatcher dispatcher = request.getRequestDispatcher("views/authors/confirmDelete.jsp");
+            dispatcher.forward(request, response);
+        } else {
+            authorDao.deleteAuthor(id);
+            response.sendRedirect("/authors");
+        }
     }
+
+
+
 }

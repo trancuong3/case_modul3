@@ -1,4 +1,3 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html lang="en">
@@ -9,26 +8,19 @@
 </head>
 <body>
 <div class="container">
-    <h1>Author Form</h1>
-
-    <c:if test="${author != null}">
-    <form action="authors/update" method="post">
-        <input type="hidden" name="id" value="<c:out value='${author.id}'/>"/>
-        </c:if>
-        <c:if test="${author == null}">
-        <form action="authors/insert" method="post">
-            </c:if>
-
-            <div class="form-group">
-                <label for="name">Name</label>
-                <input type="text" class="form-control" name="name" id="name" value="${author.name}" required>
-            </div>
-            <div class="form-group">
-                <label for="bio">Bio</label>
-                <textarea class="form-control" name="bio" id="bio" rows="3">${author.bio}</textarea>
-            </div>
-            <button type="submit" class="btn btn-primary">Save</button>
-        </form>
+    <h1>Add New Author</h1>
+    <form action="authors?action=insert" method="post">
+        <div class="form-group">
+            <label for="name">Name</label>
+            <input type="text" class="form-control" name="name" id="name" required>
+        </div>
+        <div class="form-group">
+            <label for="bio">Bio</label>
+            <textarea class="form-control" name="bio" id="bio" rows="3" required></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">Add Authors</button>
+        <a href="authors" class="btn btn-secondary">Cancel</a>
+    </form>
 </div>
 </body>
 </html>

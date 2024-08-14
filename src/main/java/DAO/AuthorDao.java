@@ -1,5 +1,7 @@
 package DAO;
 import model.Author;
+import model.Book;
+
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -91,12 +93,52 @@ public class AuthorDao {
         }
         return rowUpdated;
     }
-    public void updateIdsAfterDelete(int deletedId) throws SQLException {
-        String query = "UPDATE authors SET id = id - 1 WHERE id > ?";
+    public List<Author> searchAuthors(String query) {
+        List<Author> authors = new ArrayList<>();
+        String sqlQuery = "SELECT * FROM authors WHERE name LIKE ? OR bio LIKE ?";
+
         try (Connection connection = getConnection();
-             PreparedStatement statement = connection.prepareStatement(query)) {
-            statement.setInt(1, deletedId);
-            statement.executeUpdate();
+             PreparedStatement preparedStatement = connection.prepareStatement(sqlQuery)) {
+            String searchTerm = "%" + query + "%";
+            preparedStatement.setString(1, searchTerm);
+            preparedStatement.setString(2, searchTerm);
+            ResultSet rs = preparedStatement.executeQuery();
+
+            while (rs.next()) {
+                int id = rs.getInt("id");
+                String name = rs.getString("name");
+                String bio = rs.getString("bio");
+                Author author = new Author();
+                author.setId(id);
+                author.setName(name);
+                author.setBio(bio);
+                authors.add(author);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
+        return authors;
     }
+    public List<Book> selectBooksByAuthorId(int authorId) {
+        List<Book> books = new ArrayList<>();
+        String query = "SELECT * FROM books WHERE author_id = ?";
+
+        try (Connection connection = getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+            preparedStatement.setInt(1, authorId);
+            ResultSet rs = preparedStatement.executeQuery();
+            while (rs.next()) {
+                int id = rs.getInt("id");
+                String title = rs.getString("title");
+                String description = rs.getString("description");
+                Book book = new Book(id, title, description, authorId);
+                books.add(book);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return books;
+    }
+
+
 }

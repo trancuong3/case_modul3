@@ -2,7 +2,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Add New Book</title>
+    <title>Edit Book</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <style>
         body {
@@ -23,21 +23,26 @@
 </head>
 <body>
 <div class="container">
-    <h1>Add New Book</h1>
-    <form action="books?action=insert" method="post">
+    <h1>Edit Book</h1>
+    <form action="books?action=update" method="post">
+        <input type="hidden" name="id" value="${book.id}"/>
         <div class="form-group">
             <label for="title">Title</label>
-            <input type="text" class="form-control" id="title" name="title" required>
+            <input type="text" class="form-control" id="title" name="title" value="${book.title}" required>
         </div>
         <div class="form-group">
             <label for="genre">Genre</label>
-            <input type="text" class="form-control" id="genre" name="genre" required>
+            <input type="text" class="form-control" id="genre" name="genre" value="${book.genre}" required>
         </div>
         <div class="form-group">
-            <label for="authorId">Author ID</label>
-            <input type="number" class="form-control" id="authorId" name="authorId" required min="1">
+            <label for="authorId">Author</label>
+            <select class="form-control" id="authorId" name="authorId" required>
+                <c:forEach var="author" items="${authors}">
+                    <option value="${author.id}" ${author.id == book.authorId ? 'selected' : ''}>${author.name}</option>
+                </c:forEach>
+            </select>
         </div>
-        <button type="submit" class="btn btn-primary">Add Book</button>
+        <button type="submit" class="btn btn-primary">Update Book</button>
         <a href="/books" class="btn btn-secondary">Cancel</a>
     </form>
 </div>

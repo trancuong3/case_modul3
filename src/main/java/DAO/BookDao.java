@@ -88,6 +88,7 @@ public class BookDao {
         }
         return rowDeleted;
     }
+
     public boolean updateBook(Book book) throws SQLException {
         boolean rowUpdated;
         try (Connection connection = getConnection();
@@ -109,8 +110,36 @@ public class BookDao {
         }
     }
 
+    public List<Book> searchBooks(String query) {
+        List<Book> books = new ArrayList<>();
+        String sqlQuery = "SELECT b.id, b.title, b.genre, a.name AS authorName FROM books b " +
+                "JOIN authors a ON b.author_id = a.id " +
+                "WHERE b.title LIKE ? OR a.name LIKE ?";
 
+        try (Connection connection = getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(sqlQuery)) {
+            String searchTerm = "%" + query + "%";
+            preparedStatement.setString(1, searchTerm);
+            preparedStatement.setString(2, searchTerm);
+            ResultSet rs = preparedStatement.executeQuery();
 
+            while (rs.next()) {
+                int id = rs.getInt("id");
+                String title = rs.getString("title");
+                String genre = rs.getString("genre");
+                String authorName = rs.getString("authorName");
+                Book book = new Book();
+                book.setId(id);
+                book.setTitle(title);
+                book.setGenre(genre);
+                book.setAuthorName(authorName);
+                books.add(book);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return books;
+    }
 
 
 }
